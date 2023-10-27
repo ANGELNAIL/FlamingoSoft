@@ -42,7 +42,7 @@
             telefono: '',
             celular: '',
             direccion: '',
-            persona: '1',
+            persona: true,
             estatus: 'A',
             informacionFiscal: {
              idInformacionFiscal: 0,
@@ -53,8 +53,30 @@
               idCliente: 0
             }
           }
+          $scope.DefinePersona=function()
+          {
+            if($scope.NewCliente.rfc.length>12)
+            {
+                $scope.NewCliente.persona=true;
+            }
+            else
+            {
+                $scope.NewCliente.persona=false;
+            }
+          }
         $scope.Cliente_Ins = function (NewCliente) {
             $http({
+                url: "https://localhost:7039/Api/Clientes/PostCliente",
+                method: "POST",
+                data: NewCliente
+            }).then(function (response) {
+                // Aquí manejamos la respuesta de la API
+                console.log("Cliente creado con éxito:", response.data);
+            }).catch(function (err) {
+                // Manejo de errores
+                console.error("Error al crear cliente:", err.data);
+            });
+            /*$http({
                 url: "https://localhost:7039/Api/Clientes/PostCliente",
                 method: "post",
                 data:{'cliente':NewCliente},
@@ -80,8 +102,9 @@
                 console.log(err);
                 alert('Excepcion Al Guardar.' + err);
             });
+            */
         }
-        $scope .Cliente_Sel =function (Estado) {
+        $scope .Cliente_Sel =function (Estado) {            
              $http({
                 url: "https://localhost:7039/Api/Clientes",
                 method: "get",

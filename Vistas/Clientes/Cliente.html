@@ -70,7 +70,7 @@
             <div class="modal-body">
                 <h1>Datos Cliente</h1>
                 <div class="row">
-                    <div class="col-md-12" ng-if="NewCliente.persona==='0'">
+                    <div class="col-md-12" ng-if="!NewCliente.persona">
                         <label>Nombre Comercial</label>
                         <input class="form-control" type="text" ng-model="NewCliente.nombreComercial">
                     </div>
@@ -104,14 +104,12 @@
                     </div>
                     <div class="col-md-6">
                         <label>Persona</label>
-                        <select class="form-control" ng-model="NewCliente.persona">
-                            <option value="1">Fisica</option>
-                            <option value="0">Moral</option>
-                        </select>
+                        <input ng-show="NewCliente.persona" class="form-control" disabled placeholder="Fisica">
+                        <input ng-show="!NewCliente.persona" class="form-control" disabled placeholder="Moral">
                     </div>        
                     <div class="col-md-6">
                         <label>Rfc</label>
-                        <input class="form-control" type="text" ng-model="rfc">
+                        <input maxlength="13" ng-change="DefinePersona()" class="form-control" type="text" ng-model="NewCliente.informacionFiscal.rfc">
                     </div>
                     <div class="col-md-6">
                         <label>Inicio Actividades</label>
@@ -150,7 +148,7 @@
             <div class="modal-body">
                 <h1>Datos Cliente</h1>
                 <div class="row">
-                    <div class="col-md-12" ng-if="Edit.persona==='0'">
+                    <div class="col-md-12" ng-if="!Edit.persona">
                         <label>Nombre Comercial</label>
                         <input class="form-control" type="text" ng-model="Edit.nombreComercial">
                     </div>
@@ -184,14 +182,12 @@
                     </div>
                     <div class="col-md-6">
                         <label>Persona</label>
-                        <select class="form-control" ng-model="Edit.persona">
-                            <option value="1">Fisica</option>
-                            <option value="0">Moral</option>
-                        </select>
+                        <input ng-show="Edit.persona" class="form-control" disabled placeholder="Fisica">
+                        <input ng-show="!Edit.persona" class="form-control" disabled placeholder="Moral">
                     </div>        
                     <div class="col-md-6">
                         <label>Rfc</label>
-                        <input class="form-control" type="text" ng-model="Edit.rfc">
+                        <input class="form-control" type="text" ng-model="Edit.informacionFiscal.rfc">
                     </div>
                     <div class="col-md-6">
                         <label>Inicio Actividades</label>
