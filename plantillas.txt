@@ -1,0 +1,99 @@
+----------------------------AngularApp----------------------------------------------------------------------------------
+var DescargasApp = angular.module('Descargas', []);
+DescargasApp.run(function ($rootScope,$http){   
+    $rootScope.sortBy = function (ColumnName) {
+        $rootScope.reverse = ($rootScope.ColumnName === ColumnName) ? !$rootScope.reverse : false;
+        $rootScope.ColumnName = ColumnName;
+    };    
+});
+DescargasApp.config(function ($routeProvider){
+    $routeProvider.
+        when('/', { templateUrl: '../Controller/Vista', controller: 'MainController' }).
+        when('/palabraclave', 
+        {templateUrl: '../Controller/Vista', controller: 'MainController' }).
+        otherwise({templateUrl:'<h1>Otherwise</h1>'// This is when any route not matched => error});
+});
+DescargasApp.filter('Fecha', ['$filter', $filter =>
+    (date, format, timezone) =>
+        date && $filter('date')(date.slice(6, -2),
+            format, timezone)
+]);
+
+----------------------------Angularjs------------------------------------------------------------------------------------
+(function (Variable) {
+    "use strict";
+    Variable.controller("VariableController", function ($http, $scope) {
+        $scope.ListVariableMod = null;
+        $scope.ContRegistros = '0';
+        $scope.PalabraClave = '';
+        $scope.RegistrosXPag = '25'
+        $scope.Variable_Ins = function (NewVariable) {
+            $http({
+                url: "../Variable/Variable_Ins",
+                method: "POST",
+                data: NewVariable
+            }).then(function (response) {
+                $scope.ListVariableMod.push({                   
+                });
+                $scope.ContRegistros = $scope.ListVariableMod.length;
+            }).catch(function (err) {
+                alert('Excepcion Al Guardar.' + err.data);
+            });
+        }
+        $scope.Variable_Sel = function () {
+            $http({
+                url: "../Variable/Variable_Sel",
+                method: "get"
+            }).then(function (response) {
+                $scope.ListVariableMod = response.data;
+                $scope.ContRegistros = response.data.length;
+            }).catch(function (err) {
+                alert('Excepcion Sel.' + err.data);
+            });
+        }
+        $scope.Variable_LoadEdit = function (e) {
+            //EditVariable
+            $scope.EditVariable= e;           
+        };
+        $scope.Variable_Upd = function (EditVariable) {
+            var i;
+            for (i = 0; i < $scope.ListVariableMod.length; i++) {
+                if ($scope.ListVariableMod[i].IdVariable === EditVariable.IdVariable) {
+                    $http({
+                        url: "../Variable/Variable_Upd",
+                        method: "POST",
+                        data: EditVariable
+                    }).then(function () {
+                        $scope.ListVariableMod[i] = EditVariable;                      
+                    }).catch(function (err) {
+                        alert('Excepcion Upd.' + err.data);
+                    });
+                    break;
+                }
+            }
+        };
+        $scope.Variable_Del = function (Id) {
+            var i;
+            for (i = 0; i < $scope.ListVariableMod.length; i++) {
+                if ($scope.ListVariableMod[i].IdVariable === Id) {
+                    $http({
+                        url: "../Variable/Variable_Del",
+                        method: "POST",
+                        params: { ID: Id }
+                    }).then(function () {
+                        $scope.ListVariableMod.splice(i, 1);
+                        $scope.ContRegistros = $scope.ListVariableMod.length;
+                    }).catch(function (err) {
+                        alert('Excepcion Al Eliminar.' + err.data);
+                    });
+                    break;
+                }
+            }
+        };       
+        $http.get("/Lista/Lista_Sel").then(function (getLista) {
+            $scope.ListLista = getLista.data;
+        }).catch(function (error) {
+            alert('Excepcion getLista ' + error);
+            console.log(error);
+        });
+    });})(Masada);

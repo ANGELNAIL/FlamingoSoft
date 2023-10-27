@@ -1,0 +1,246 @@
+<div ng-controller="ClienteController" ng-init="Cliente_Sel(Estado)">
+    <h1>Clientes</h1>
+    <div class="row">
+        <label>Tipo</label>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Estado</label>
+            </div>
+            <select class="custom-select form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="Estado">
+                <option value="" selected="selected">Todos</option>
+                <option value="A">Activo</option>
+                <option value="C">Cancelado</option>
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" ng-click="Cliente_Sel(Estado)">Buscar</button>
+            </div>                
+        </div>
+    </div>
+    <dir-pagination-controls></dir-pagination-controls>
+    <table class="table table-bordered" id="dataTable" cellspacing="0" ng-hide="mainItems.length==0">
+        <thead>
+            <tr>
+                <th ng-click="sortBy('Cliente')">Cliente <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('correo')">Correo <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('telefono')">Telefono <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('celular')">Celular <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('persona')">Persona<i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('estatus')">Estado<i class=" fas fa-sort"></i></th>
+                <th>    
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoCliente">
+                    <i class="icon fas fa-plus"></i></button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="e in ListClienteMod | filter: PalabraClave | orderBy:ColumnName:reverse |itemsPerPage:RegistrosXPag as mainItems">
+                <td><span ng-if="!e.persona">{{e.nombre}}</span> <span ng-if="e.persona">{{e.nombreComercial}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}</span></td>
+                <td>{{e.correo}}</td>
+                <td>{{e.telefono}}</td>
+                <td>{{e.celular}}</td>
+                <td>
+                    <span ng-if="e.persona">Fisica</span>
+                    <span ng-if="!e.persona">Moral</span> 
+                <td>
+                    {{e.estatus}}
+                    <span ng-if="e.estatus==='A'">Activo</span>
+                    <span ng-if="e.estatus==='C'">Cancelado</span>
+                </td>
+                <td>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#DetallesCliente"   ng-click="Cliente_SelbyId(e.idCliente)"><i class="icon fas fa-eye"></i></button>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#EliminarCliente" ng-click="Cliente_LoadEdit(e)"><i class="icon fas fa-trash"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3 ng-if="mainItems.length==0">No se encontraron registros     
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoCliente">
+        <i class="icon fas fa-plus"></i>
+    </button></h3>
+    <dir-pagination-controls></dir-pagination-controls>
+    <div id="NuevoCliente" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Agregar Cliente</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>Datos Cliente</h1>
+                <div class="row">
+                    <div class="col-md-12" ng-if="NewCliente.persona==='0'">
+                        <label>Nombre Comercial</label>
+                        <input class="form-control" type="text" ng-model="NewCliente.nombreComercial">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Nombre</label>
+                        <input class="form-control" type="text" ng-model="NewCliente.nombre">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Paterno</label>
+                        <input class="form-control" type="text" ng-model="NewCliente.apellidoPaterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Materno</label>
+                        <input class="form-control" type="text" ng-model="NewCliente.apellidoMaterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Correo</label>
+                        <input class="form-control" type="text" ng-model="NewCliente.correo">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Telefono</label>
+                        <input class="form-control" type="text" ng-model="NewCliente.telefono">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Celular</label>
+                        <input class="form-control" type="text" ng-model="NewCliente.celular">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Direccion</label>
+                        <input class="form-control" type="text" ng-model="NewCliente.direccion">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Persona</label>
+                        <select class="form-control" ng-model="NewCliente.persona">
+                            <option value="1">Fisica</option>
+                            <option value="0">Moral</option>
+                        </select>
+                    </div>        
+                    <div class="col-md-6">
+                        <label>Rfc</label>
+                        <input class="form-control" type="text" ng-model="rfc">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Inicio Actividades</label>
+                        <input class="form-control" type="date" ng-model="NewCliente.informacionFiscal.inicioActividades">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Regimen Fiscal</label>
+                        <select class="form-control" ng-model="NewCliente.informacionFiscal.regimenFiscal">
+                            <option ng-repeat="Regimen in regimenFiscal" value="{{ Regimen.clave }}">
+                                {{ Regimen.nombre }}
+                              </option>    
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Codigo Postal</label>
+                        <input class="form-control" type="text"  ng-model="NewCliente.informacionFiscal.cp">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="Cliente_Ins(NewCliente)"><i class="icon fas fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="DetallesCliente" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Detalles Cliente</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>Datos Cliente</h1>
+                <div class="row">
+                    <div class="col-md-12" ng-if="Edit.persona==='0'">
+                        <label>Nombre Comercial</label>
+                        <input class="form-control" type="text" ng-model="Edit.nombreComercial">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Nombre</label>
+                        <input class="form-control" type="text" ng-model="Edit.nombre">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Paterno</label>
+                        <input class="form-control" type="text" ng-model="Edit.apellidoPaterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Materno</label>
+                        <input class="form-control" type="text" ng-model="Edit.apellidoMaterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Correo</label>
+                        <input class="form-control" type="text" ng-model="Edit.correo">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Telefono</label>
+                        <input class="form-control" type="text" ng-model="Edit.telefono">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Celular</label>
+                        <input class="form-control" type="text" ng-model="Edit.celular">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Direccion</label>
+                        <input class="form-control" type="text" ng-model="Edit.direccion">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Persona</label>
+                        <select class="form-control" ng-model="Edit.persona">
+                            <option value="1">Fisica</option>
+                            <option value="0">Moral</option>
+                        </select>
+                    </div>        
+                    <div class="col-md-6">
+                        <label>Rfc</label>
+                        <input class="form-control" type="text" ng-model="Edit.rfc">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Inicio Actividades</label>
+                        <input class="form-control" type="date" ng-model="Edit.informacionFiscal.inicioActividades">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Regimen Fiscal</label>
+                        <select class="form-control" ng-model="Edit.informacionFiscal.regimenFiscal">
+                            <option ng-repeat="Regimen in regimenFiscal" value="{{ Regimen.clave }}">
+                                {{ Regimen.nombre }}
+                              </option>    
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Codigo Postal</label>
+                        <input class="form-control" type="text"  ng-model="Edit.informacionFiscal.cp">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="Cliente_Ins(NewCliente)"><i class="icon fas fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="EliminarCliente" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header  bg-danger">
+              <h5 class="modal-title">Eliminar Cliente</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>¿Desea eliminar al cliente?</h1>
+                <h1 ng-if="Edit.persona">
+                    {{Edit.nombre}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}
+                </h1>
+                <h1>
+                    {{Edit.nombreComercial}}
+                </h1>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="Cliente_Del(Edit.idCliente)"><i class="icon fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
