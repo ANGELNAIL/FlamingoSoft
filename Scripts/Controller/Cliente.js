@@ -3,9 +3,8 @@
     Cliente.controller("ClienteController", function ($http,$rootScope, $scope) {
         $scope.ListClienteMod = null;
         $scope.Estado='';
+        $scope.Editar=false;
         $scope.ContRegistros = '0';
-        $scope.Palabraclave = '';
-        $scope.RegistrosXPag = '25';
         $scope.regimenFiscal= [
             { clave: "601", nombre: "General de Ley Personas Morales" },
             { clave: "603", nombre: "Personas Morales con Fines no Lucrativos" },
@@ -70,20 +69,6 @@
                 method: "POST",
                 data: NewCliente
             }).then(function (response) {
-                // Aquí manejamos la respuesta de la API
-                console.log("Cliente creado con éxito:", response.data);
-            }).catch(function (err) {
-                // Manejo de errores
-                console.error("Error al crear cliente:", err.data);
-            });
-            /*$http({
-                url: "https://localhost:7039/Api/Clientes/PostCliente",
-                method: "post",
-                data:{'cliente':NewCliente},
-        headers: {
-            "Content-Type": "application/json",
-            "accept": "text/plain"
-        }}).then(function (response) {
                 $scope.ListClienteMod.push({    
                     idCliente: response.data.idCliente,
                     nombreComercial: response.data.nombreComercial,
@@ -94,15 +79,15 @@
                     telefono: response.data.telefono,
                     celular: response.data.celular,
                     direccion: response.data.direccion,
-                    persona: response.data.estatus,
+                    persona: response.data.persona,
                     estatus: response.data.estatus               
                 });
                 $scope.ContRegistros = $scope.ListClienteMod.length;
+                $rootScope.Closmod('#NuevoCliente','');
+                alert('Se ha registrado con exito');
             }).catch(function (err) {
-                console.log(err);
-                alert('Excepcion Al Guardar.' + err);
+                console.error("Error al crear cliente:", err.data);
             });
-            */
         }
         $scope .Cliente_Sel =function (Estado) {            
              $http({
@@ -110,8 +95,9 @@
                 method: "get",
                 params:{status:Estado}
             }).then(function (response) {
+                console.log(response.data)
                 $scope.ListClienteMod = response.data;              
-                $scope.ContRegistros = response.length;
+                $scope.ContRegistros = response.data.length;
             }).catch(function (err) {
                 alert('Excepcion Sel.' + err.data);
             });
@@ -122,7 +108,10 @@
                method: "get",
                params:{Id:Id}
            }).then(function (response) {
-               $scope.Edit = response.data;     
+                //var partes = response.data.informacionFiscal.inicioActividades.split("T");
+                //response.data.informacionFiscal.inicioActividades =new Date(partes[0]); 
+                response.data.informacionFiscal.inicioActividades =new Date(response.data.informacionFiscal.inicioActividades); 
+                $scope.Edit = response.data;
                console.log(response.data);       
            }).catch(function (err) {
                alert('Excepcion Sel.' + err.data);
@@ -130,18 +119,31 @@
        }
         $scope.Cliente_LoadEdit = function (e) {
             //EditCliente
-            $scope.EditCliente= e;           
+            $scope.EditCliente= e;  
         };
         $scope.Cliente_Upd = function (EditCliente) {
             var i;
             for (i = 0; i < $scope.ListClienteMod.length; i++) {
                 if ($scope.ListClienteMod[i].IdCliente === EditCliente.IdCliente) {
                     $http({
-                        url: "https://localhost:7039/api/Clientes/Cliente_Upd",
-                        method: "POST",
+                        url: "https://localhost:7039/api/Clientes/PutCliente",
+                        method: "put",
                         data: EditCliente
-                    }).then(function () {
-                        $scope.ListClienteMod[i] = EditCliente;                      
+                    }).then(function (response) {
+                        $scope.ListClienteMod[i].idCliente=EditCliente.idCliente;
+                        $scope.ListClienteMod[i].nombreComercial=EditCliente.nombreComercial;
+                        $scope.ListClienteMod[i].nombre=EditCliente.nombre;
+                        $scope.ListClienteMod[i].apellidoPaterno=EditCliente.apellidoPaterno;
+                        $scope.ListClienteMod[i].apellidoMaterno=EditCliente.apellidoMaterno;
+                        $scope.ListClienteMod[i].correo=EditCliente.correo;
+                        $scope.ListClienteMod[i].telefono=EditCliente.telefono;
+                        $scope.ListClienteMod[i].celular=EditCliente.celular;
+                        $scope.ListClienteMod[i].direccion=EditCliente.direccion;
+                        $scope.ListClienteMod[i].persona=EditCliente.persona;
+                        $scope.ListClienteMod[i].estatus=EditCliente.estatus;      
+                        $rootScope.Closmod('#DetallesCliente','');
+                        $scope.Editar=false;
+                        alert(response.data);
                     }).catch(function (err) {
                         alert('Excepcion Upd.' + err.data);
                     });
@@ -149,35 +151,21 @@
                 }
             }
         };
-        $scope .Cliente_Dela =function (Id) {
-            $http({
-               url: "https://localhost:7039/Api/Clientes",
-               method: "DELETE",
-               params:{id   :Id}
-           }).then(function (response) {
-               $scope.ListClienteMod = response.data;              
-               $scope.ContRegistros = response.length;
-           }).catch(function (err) {
-               alert('Excepcion del.' + err.data);
-           });
-       }
         $scope.Cliente_Del = function (Id) {            var i;
             for (i = 0; i < $scope.ListClienteMod.length; i++) {
                 if ($scope.ListClienteMod[i].idCliente === Id) {
-                    // Make a DELETE request to the API
                     $http({
                         url: "https://localhost:7039/Api/Clientes",
                         method: "DELETE",
                         params: { id: Id }
                     }).then(function (response) {
                         if ($scope.Estado === 'A') {
-                            // If the status is 'A', remove the client from the list
                             $scope.ListClienteMod.splice(i, 1);
                             $scope.ContRegistros = $scope.ListClienteMod.length;
                         } else {
-                            // If the status is not 'A', update the client's status to 'C'
                             $scope.ListClienteMod[i].estatus = 'C';
                         }
+                        $rootScope.Closmod('#EliminarCliente','');                        
                         alert(response.data);        
                     }).catch(function (err) {
                         console.log(err);
@@ -187,4 +175,12 @@
                 }
             }
         };        
+        $scope.ValidarEditar=function () 
+        {
+
+            if($scope.Editar===true)
+            {
+                $scope.Editar=false;
+            }
+        }
     });})(FlamingoSoft);

@@ -1,5 +1,7 @@
 <div ng-controller="ClienteController" ng-init="Cliente_Sel(Estado)">
-    <h1>Clientes</h1>
+    <h1>Clientes
+        {{ContRegistros}}
+    </h1>
     <div class="row">
         <label>Tipo</label>
         <div class="input-group mb-3">
@@ -16,7 +18,7 @@
             </div>                
         </div>
     </div>
-    <dir-pagination-controls></dir-pagination-controls>
+    <dir-pagination-controls paginate-id="Clientes"></dir-pagination-controls>
     <table class="table table-bordered" id="dataTable" cellspacing="0" ng-hide="mainItems.length==0">
         <thead>
             <tr>
@@ -33,8 +35,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr dir-paginate="e in ListClienteMod | filter: PalabraClave | orderBy:ColumnName:reverse |itemsPerPage:RegistrosXPag as mainItems">
-                <td><span ng-if="!e.persona">{{e.nombre}}</span> <span ng-if="e.persona">{{e.nombreComercial}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}</span></td>
+            <tr dir-paginate="e in ListClienteMod | filter: PalabraClave | orderBy:ColumnName:reverse |itemsPerPage:RegistrosXPag as mainItems" paginate-id="Clientes"> 
+                <td>
+                    <span ng-if="!e.persona">{{e.nombreComercial}}</span>
+                     <span ng-if="e.persona">{{e.nombre}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}</span></td>
                 <td>{{e.correo}}</td>
                 <td>{{e.telefono}}</td>
                 <td>{{e.celular}}</td>
@@ -42,9 +46,8 @@
                     <span ng-if="e.persona">Fisica</span>
                     <span ng-if="!e.persona">Moral</span> 
                 <td>
-                    {{e.estatus}}
-                    <span ng-if="e.estatus==='A'">Activo</span>
-                    <span ng-if="e.estatus==='C'">Cancelado</span>
+                    <span ng-show="e.estatus=='A'">Activo</span>
+                    <span ng-show="e.estatus=='C'">Cancelado</span>
                 </td>
                 <td>
                     <button class="btn btn-primary" data-toggle="modal" data-target="#DetallesCliente"   ng-click="Cliente_SelbyId(e.idCliente)"><i class="icon fas fa-eye"></i></button>
@@ -57,7 +60,7 @@
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoCliente">
         <i class="icon fas fa-plus"></i>
     </button></h3>
-    <dir-pagination-controls></dir-pagination-controls>
+    <dir-pagination-controls paginate-id="Clientes"></dir-pagination-controls>
     <div id="NuevoCliente" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content">
@@ -140,18 +143,48 @@
         <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Detalles Cliente</h5>
+              <h1 class="modal-title">Detalles Cliente <button class="btn btn-primary"
+                 ng-clicK="Editar=!Editar" ng-show="!Editar"><i class="icon fas fa-edit"></i></button></h1>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-                <h1>Datos Cliente</h1>
-                <div class="row">
+                <div class="row" ng-show="!Editar">
+                    <div class="col-md-12">
+                        <h3 ng-if="!Edit.persona" >Empresa {{Edit.nombreComercial}}</h3>
+                        <h3 ng-if="Edit.persona">Nombre: {{Edit.nombre}} {{Edit.apellidoPaterno}} {{Edit.apellidoMaterno}}</h3>
+                    </div>
+                    <div class="col-md-12" ng-if="!Edit.persona">
+                        <h3 >Representante: {{Edit.nombre}} {{Edit.apellidoPaterno}} {{Edit.apellidoMaterno}}</h3>
+                    </div>
+                    <div class="col-md-6">
+                            <h3>Correo: {{Edit.correo}}</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Telefono: {{Edit.telefono}}</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Celular: {{Edit.celular}}</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Direccion: {{Edit.direccion}}</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Rfc: {{Edit.informacionFiscal.rfc}}</h3>
+                    </div>
+                    <div class="col-md-6"> 
+                        <h3>Inicio Actividades: {{Edit.informacionFiscal.inicioActividades|date :'yyyy/MM/dd'}}</h1>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Codigo Postal: {{Edit.informacionFiscal.cp}}</h3>
+                    </div>
+                </div>
+                <div class="row" ng-show="Editar">
                     <div class="col-md-12" ng-if="!Edit.persona">
                         <label>Nombre Comercial</label>
                         <input class="form-control" type="text" ng-model="Edit.nombreComercial">
-                    </div>
+                    </div>                    
                     <div class="col-md-6">
                         <label>Nombre</label>
                         <input class="form-control" type="text" ng-model="Edit.nombre">
@@ -208,8 +241,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
-              <button type="button" class="btn btn-primary" ng-click="Cliente_Ins(NewCliente)"><i class="icon fas fa-save"></i></button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal"  ng-click="ValidarEditar()"><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-show="Editar" ng-click="Cliente_Upd(Edit)"><i class="icon fas fa-save"></i></button>
             </div>
           </div>
         </div>

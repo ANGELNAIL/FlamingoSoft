@@ -1,0 +1,256 @@
+<div ng-controller="EmpleadoController" ng-init="Empleado_Sel(Estado)">
+    <h1>Empleados {{ContRegistros}}</h1>    
+        <!---<div class="row">     
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Estado</label>
+                </div>
+                <select class="custom-select form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="Estado">
+                    <option value="" selected="selected">Todos</option>
+                    <option value="A">Activo</option>
+                    <option value="C">Cancelado</option>
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" ng-click="Empleado_Sel(Estado)">Buscar</button>
+                </div>                
+            </div>
+        </div>
+        --->
+    <dir-pagination-controls paginate-id="Empleados"></dir-pagination-controls>
+    <table class="table table-bordered" id="dataTable" cellspacing="0" ng-hide="mainItems.length==0">
+        <thead>
+            <tr>
+                <th ng-click="sortBy('Nombre')">Empleado <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('Cargo')">Cargo<i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('fechaNac')">fecha Nacimiento<i class=" fas fa-sort"></i></th>
+                <th>    
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoEmpleado">
+                    <i class="icon fas fa-plus"></i></button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="e in ListEmpleadoMod | filter: PalabraClave | orderBy:ColumnName:reverse |itemsPerPage:RegistrosXPag as mainItems" paginate-id="Empleados">
+                <td>{{e.nombre}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}</td>
+                <td>{{e.cargo}}</td>                
+                <td>{{e.fechaNac|date :'yyyy/MM/dd'}}</td>
+                <td>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#DetallesEmpleado"   ng-click="Empleado_SelbyId(e.idEmpleado)"><i class="icon fas fa-edit"></i></button>
+                   <!--
+                       <button class="btn btn-danger" data-toggle="modal" data-target="#EliminarEmpleado" ng-click="Empleado_LoadEdit(e)"><i class="icon fas fa-trash"></i></button>
+                -->                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3 ng-if="mainItems.length==0">No se encontraron registros     
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoEmpleado">
+        <i class="icon fas fa-plus"></i>
+    </button></h3>
+    <dir-pagination-controls paginate-id="Empleados"></dir-pagination-controls>
+    <div id="NuevoEmpleado" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Agregar Empleado</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>Datos Empleado</h1>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Nombre</label>
+                        <input class="form-control" placeholder="" type="text" ng-model="NewEmpleado.nombre">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Paterno</label>
+                        <input class="form-control" placeholder="" type="text" ng-model="NewEmpleado.apellidoPaterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Materno</label>
+                        <input class="form-control" placeholder="" type="text" ng-model="NewEmpleado.apellidoMaterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Correo</label>
+                        <input class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Imagen </label>
+                        <div class="input-group">
+                            <input ng-model="NewEmpleado.imagen" id="" ng-change="fileChanged()" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                            <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Button</button>
+                          </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Fecha de Nacimiento</label>
+                        <input class="form-control" type="date" ng-model="NewEmpleado.fechaNac">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Cargo</label>
+                        <select class="form-control" ng-model="NewEmpleado.cargo">
+                            <option ng-repeat="cargos in Cargo" value="{{cargos.Puesto}}">
+                                {{ cargos.Puesto}}
+                              </option>    
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Usuario</label>
+                        <input class="form-control" disabled placeholder="" type="text" ng-model="NewEmpleado.usuario.nombre">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Rol</label>
+                        <select ng-model="NewEmpleado.usuario.rol" class="form-control">
+                            <option value="Admin">Admin</option>
+                            <option value="Usuario">usuario</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Contraseña</label>
+                        <div class="input-group">
+                            <input disabled class="form-control rounded-border-left" type="password" ng-model="NewEmpleado.usuario.contrasenia" ng-attr-type="{{ showPassword ? 'text':'password'}}" placeholder="****************" />
+                            <div class="input-group-append">
+                                <span class="input-group-text rounded-border-right" ng-click="showPassword=!showPassword"><i ng-class="{'fa fa-eye': showPassword,'fa fa-eye-slash': !showPassword}"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="Empleado_Ins(NewEmpleado)"><i class="icon fas fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="DetallesEmpleado" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">Detalles Empleado 
+<!---
+<button class="btn btn-primary"
+                    ng-clicK="Editar=!Editar" ng-show="!Editar"><i class="icon fas fa-edit"></i></button>
+-->
+                </h1>
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+                 </button>
+               </div>
+            <div class="modal-body">
+                <!---
+                                <div class="card" ng-show="!Editar">
+                    
+                        <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h3 class="card-title">Empleado {{Edit.nombre}} {{Edit.apellidoPaterno}} {{Edit.apellidoMaterno}}</h5>
+                      <div class="row" ng-show="!Editar">
+                        <div class="col-md-6">
+                            <h3>Correo: {{Edit.usuario.correo}}</h3>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>Fecha Nacimiento: {{Edit.fechaNac|date :'yyyy/MM/dd'}}</h3>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>cargo: {{Edit.cargo}}</h3>
+                        </div>
+                    </div>    
+                     </div>                  
+                </div>
+
+                -->
+                <div class="row" >
+                    <div class="col-md-12" disabled>
+                        <label>Nombre</label>
+                        <input  disabled class="form-control" placeholder="" type="text" ng-model="Edit.nombre">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Paterno</label>
+                        <input disabled class="form-control" placeholder="" type="text" ng-model="Edit.apellidoPaterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Materno</label>
+                        <input disabled class="form-control" placeholder="" type="text" ng-model="Edit.apellidoMaterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Correo</label>
+                        <input  disabled class="form-control" ng-model="Edit.usuario.correo">
+                    </div>
+                    <!----
+                        <div class="col-md-6">
+                            <label>Imagen </label>
+                            <div class="input-group">
+                                <input ng-change="fileChanged()" id="fileInput" ng-model="Edit.imagen" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Button</button>
+                            </div>
+                        </div>
+                    -->
+                    <div class="col-md-6">
+                        <label>Fecha de Nacimiento</label>
+                        <input disabled class="form-control" type="date" ng-model="Edit.fechaNac">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Cargo</label>
+                        <select class="form-control" ng-model="Edit.cargo">
+                            <option ng-repeat="cargos in Cargo" value="{{cargos.Puesto}}">
+                                {{ cargos.Puesto}}
+                              </option>    
+                        </select>
+                    </div>
+                    <!---
+                                        <div class="col-md-6">
+                        <label>Usuario</label>
+                        <input disabled class="form-control" disabled placeholder="" type="text" ng-model="Edit.usuario.nombre">
+                    </div>
+                    -->
+                    <div class="col-md-6">
+                        <label>Rol</label>
+                        <select ng-model="Edit.usuario.rol" class="form-control">
+                            <option value="Admin">Admin</option>
+                            <option value="Usuario">usuario</option>
+                        </select>
+                    </div>
+                    <!---
+                                            <div class="col-md-6">
+                        <label>Contraseña</label>
+                        <div class="input-group" disabled>
+                            <input disabled class="form-control rounded-border-left" type="password" ng-model="Edit.usuario.contrasenia" ng-attr-type="{{ showPassword ? 'text':'password'}}" placeholder="****************" />
+                            <div class="input-group-append">
+                                <span class="input-group-text rounded-border-right" ng-click="showPassword=!showPassword"><i ng-class="{'fa fa-eye': showPassword,'fa fa-eye-slash': !showPassword}"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" ng-clik="ValidarEditar()" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="Empleado_Upd(Edit)"><i class="icon fas fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="EliminarEmpleado" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header  bg-danger">
+              <h5 class="modal-title">Eliminar Empleado</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>¿Desea eliminar al Empleado?</h1>
+                <h1>
+                    {{Edit.nombre}} {{Edit.apellidoPaterno}} {{Edit.apellidoMaterno}}
+                </h1>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="Empleado_Del(Edit.idCliente)"><i class="icon fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
