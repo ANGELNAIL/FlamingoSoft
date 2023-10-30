@@ -1,0 +1,152 @@
+<div ng-controller="CarteraClientesController" ng-init="CarteraClientes_Sel(Estado);CarteraClienteConsultas_Sel()">
+    <h1>CarteraClientes
+        {{ContRegistros}}
+    </h1>
+    <div class="row">
+        <label>Tipo</label>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Estado</label>
+            </div>
+            <select class="custom-select form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="Estado">
+                <option value="" selected="selected">Todos</option>
+                <option value="A">Activo</option>
+                <option value="C">Cancelado</option>
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" ng-click="CarteraClientes_Sel(Estado)">Buscar</button>
+            </div>                
+        </div>
+    </div>
+    <dir-pagination-controls paginate-id="CarteraClientes"></dir-pagination-controls>
+    <table class="table table-bordered" id="dataTable" cellspacing="0" ng-hide="mainItems.length==0">
+        <thead>
+            <tr>
+                <th ng-click="sortBy('cliente')">Cliente <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('estatus')">Estatus <i class=" fas fa-sort"></i></th>
+                <th>    
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoCarteraClientes">
+                    <i class="icon fas fa-plus"></i></button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="e in ListCarteraClientesMod | filter: PalabraClave | orderBy:ColumnName:reverse |itemsPerPage:RegistrosXPag as mainItems" paginate-id="CarteraClientes"> 
+                <td>{{e.cliente}}</td>
+                <td>
+                    <span ng-show="e.estatus=='A'">Activo</span>
+                    <span ng-show="e.estatus=='C'">Cancelado</span>
+                </td>
+                <td>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#DetallesCarteraClientes"   ng-click="CarteraClientes_SelbyId(e.id)"><i class="icon fas fa-eye"></i></button>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#EliminarCarteraClientes" ng-click="CarteraClientes_LoadEdit(e)"><i class="icon fas fa-trash"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3 ng-if="mainItems.length==0">No se encontraron registros     
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoCarteraClientes">
+        <i class="icon fas fa-plus"></i>
+    </button></h3>
+    <dir-pagination-controls paginate-id="CarteraClientes"></dir-pagination-controls>
+    <div id="NuevoCarteraClientes" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Agregar CarteraClientes</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>Datos CarteraClientes</h1>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Cliente</label>
+                        <select class="form-control" ng-model="Edit.idCliente">
+                            <option ng-repeat="Cliente in Consultas.cliente" value="{{Cliente.idCliente}}">
+                                {{Cliente.cliente}}
+                            </option>    
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Empleado</label>
+                        <select class="form-control" ng-model="Edit.idUsuario">
+                            <option ng-repeat="Empleado in Consultas.empleado" value="{{Empleado.idUsuario}}">
+                                {{Empleado.empleado}}
+                            </option>    
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="CarteraClientes_Ins(NewCarteraClientes)"><i class="icon fas fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="DetallesCarteraClientes" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title">Detalles CarteraClientes <button class="btn btn-primary"
+                 ng-clicK="Editar=!Editar" ng-show="!Editar"><i class="icon fas fa-edit"></i></button></h1>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>Datos CarteraClientes</h1>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Cliente</label>
+                        <select class="form-control" ng-model="NewCarteraClientes.idCliente">
+                            <option ng-repeat="Cliente in Consultas.cliente" value="{{Cliente.idCliente}}">
+                                {{Cliente.cliente}}
+                            </option>    
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Empleado</label>
+                        <select class="form-control" ng-model="NewCarteraClientes.idUsuario">
+                            <option ng-repeat="Empleado in Consultas.empleado" value="{{Empleado.idUsuario}}">
+                                {{Empleado.empleado}}
+                            </option>    
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal"  ng-click="ValidarEditar()"><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-show="Editar" ng-click="CarteraClientes_Upd(Edit)"><i class="icon fas fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="EliminarCarteraClientes" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header  bg-danger">
+              <h5 class="modal-title">Eliminar CarteraClientes</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>¿Desea eliminar al CarteraClientes?</h1>
+                <h1 ng-if="Edit.persona">
+                    {{Edit.nombre}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}
+                </h1>
+                <h1>
+                    {{Edit.nombreComercial}}
+                </h1>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="CarteraClientes_Del(Edit.idCarteraClientes)"><i class="icon fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>

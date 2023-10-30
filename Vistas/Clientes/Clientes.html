@@ -38,13 +38,15 @@
             <tr dir-paginate="e in ListClienteMod | filter: PalabraClave | orderBy:ColumnName:reverse |itemsPerPage:RegistrosXPag as mainItems" paginate-id="Clientes"> 
                 <td>
                     <span ng-if="!e.persona">{{e.nombreComercial}}</span>
-                     <span ng-if="e.persona">{{e.nombre}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}</span></td>
+                     <span ng-if="e.persona">{{e.nombre}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}</span>
+                </td>
                 <td>{{e.correo}}</td>
                 <td>{{e.telefono}}</td>
                 <td>{{e.celular}}</td>
                 <td>
                     <span ng-if="e.persona">Fisica</span>
                     <span ng-if="!e.persona">Moral</span> 
+                </td>
                 <td>
                     <span ng-show="e.estatus=='A'">Activo</span>
                     <span ng-show="e.estatus=='C'">Cancelado</span>
@@ -123,7 +125,7 @@
                         <select class="form-control" ng-model="NewCliente.informacionFiscal.regimenFiscal">
                             <option ng-repeat="Regimen in regimenFiscal" value="{{ Regimen.clave }}">
                                 {{ Regimen.nombre }}
-                              </option>    
+                            </option>    
                         </select>
                     </div>
                     <div class="col-md-6">
