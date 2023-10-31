@@ -67,6 +67,9 @@ FlamingoSoft.config(['$routeProvider', function ($routeProvider) {
         }).when('/CarteraClientes', {
             templateUrl: '/Vistas/CarteraClientes/CarteraClientes.html', // Asegúrate de que esta ruta sea válida
             controller: 'ClienteController'
+        }).when('/Actividades', {
+            templateUrl: '/Vistas/Actividades/Actividades.html', // Asegúrate de que esta ruta sea válida
+            controller: 'ClienteController'
         })
         .otherwise({
             templateUrl: '<h1>Otherwise</h1>'// This is when any route not matched => error

@@ -4,7 +4,6 @@
         $scope.ListClienteMod = null;
         $scope.Estado='';
         $scope.Editar=false;
-        $scope.ContRegistros = '0';
         $scope.regimenFiscal= [
             { clave: "601", nombre: "General de Ley Personas Morales" },
             { clave: "603", nombre: "Personas Morales con Fines no Lucrativos" },
@@ -82,7 +81,7 @@
                     persona: response.data.persona,
                     estatus: response.data.estatus               
                 });
-                $scope.ContRegistros = $scope.ListClienteMod.length;
+                $rootScope.ContRegistros = $scope.ListClienteMod.length;
                 $rootScope.Closmod('#NuevoCliente','');
                 alert('Se ha registrado con exito');
             }).catch(function (err) {
@@ -97,7 +96,7 @@
             }).then(function (response) {
                 console.log(response.data)
                 $scope.ListClienteMod = response.data;              
-                $scope.ContRegistros = response.data.length;
+                $rootScope.ContRegistros = response.data.length;
             }).catch(function (err) {
                 alert('Excepcion Sel.' + err.data);
             });
@@ -161,7 +160,7 @@
                     }).then(function (response) {
                         if ($scope.Estado === 'A') {
                             $scope.ListClienteMod.splice(i, 1);
-                            $scope.ContRegistros = $scope.ListClienteMod.length;
+                            $rootScope.ContRegistros = $scope.ListClienteMod.length;
                         } else {
                             $scope.ListClienteMod[i].estatus = 'C';
                         }

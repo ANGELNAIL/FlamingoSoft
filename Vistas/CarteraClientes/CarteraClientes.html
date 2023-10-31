@@ -1,9 +1,6 @@
 <div ng-controller="CarteraClientesController" ng-init="CarteraClientes_Sel(Estado);CarteraClienteConsultas_Sel()">
-    <h1>CarteraClientes
-        {{ContRegistros}}
-    </h1>
+    <h1>CarteraClientes</h1>
     <div class="row">
-        <label>Tipo</label>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">Estado</label>
@@ -38,8 +35,8 @@
                     <span ng-show="e.estatus=='C'">Cancelado</span>
                 </td>
                 <td>
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#DetallesCarteraClientes"   ng-click="CarteraClientes_SelbyId(e.id)"><i class="icon fas fa-eye"></i></button>
-                    <button class="btn btn-danger" data-toggle="modal" data-target="#EliminarCarteraClientes" ng-click="CarteraClientes_LoadEdit(e)"><i class="icon fas fa-trash"></i></button>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#DetallesCarteraClientes"   ng-click="CarteraClientes_SelbyId(e.idCartera)"><i class="icon fas fa-eye"></i></button>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#EliminarCarteraClientes" ng-click="CarteraClientes_SelbyId(e.idCartera)"><i class="icon fas fa-trash"></i></button>
                 </td>
             </tr>
         </tbody>
@@ -97,11 +94,10 @@
               </button>
             </div>
             <div class="modal-body">
-                <h1>Datos CarteraClientes</h1>
                 <div class="row">
                     <div class="col-md-12">
                         <label>Cliente</label>
-                        <select class="form-control" ng-model="NewCarteraClientes.idCliente">
+                        <select class="form-control" ng-disabled="!Editar" ng-model="Edit.idCliente">
                             <option ng-repeat="Cliente in Consultas.cliente" value="{{Cliente.idCliente}}">
                                 {{Cliente.cliente}}
                             </option>    
@@ -109,7 +105,7 @@
                     </div>
                     <div class="col-md-12">
                         <label>Empleado</label>
-                        <select class="form-control" ng-model="NewCarteraClientes.idUsuario">
+                        <select class="form-control" ng-disabled="!Editar" ng-model="Edit.idUsuario">
                             <option ng-repeat="Empleado in Consultas.empleado" value="{{Empleado.idUsuario}}">
                                 {{Empleado.empleado}}
                             </option>    
@@ -134,17 +130,29 @@
               </button>
             </div>
             <div class="modal-body">
-                <h1>¿Desea eliminar al CarteraClientes?</h1>
-                <h1 ng-if="Edit.persona">
-                    {{Edit.nombre}} {{e.apellidoPaterno}} {{e.apellidoMaterno}}
-                </h1>
-                <h1>
-                    {{Edit.nombreComercial}}
-                </h1>
+                <h1>¿Desea eliminar la cartera asignada?</h1>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Cliente</label>
+                    <select class="form-control" ng-disabled="!Editar" ng-model="Edit.idCliente">
+                        <option ng-repeat="Cliente in Consultas.cliente" value="{{Cliente.idCliente}}">
+                            {{Cliente.cliente}}
+                        </option>    
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Empleado</label>
+                    <select class="form-control" ng-disabled="!Editar" ng-model="Edit.idUsuario">
+                        <option ng-repeat="Empleado in Consultas.empleado" value="{{Empleado.idUsuario}}">
+                            {{Empleado.empleado}}
+                        </option>    
+                    </select>
+                </div>
+                </div>              
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
-              <button type="button" class="btn btn-primary" ng-click="CarteraClientes_Del(Edit.idCarteraClientes)"><i class="icon fas fa-trash"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="CarteraClientes_Del(Edit.idCartera)"><i class="icon fas fa-trash"></i></button>
             </div>
           </div>
         </div>

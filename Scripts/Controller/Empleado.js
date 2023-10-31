@@ -4,7 +4,6 @@
         $scope.ListEmpleadoMod = null;
         $scope.Estado='A';
         $scope.Editar=false;
-        $scope.ContRegistros = 0;
        $scope.NewEmpleado=
         {
             idEmpleado:0,
@@ -51,7 +50,7 @@
                     idusuario:response.data.idusuario
                 });
                 //$rootScope.Closmod('','#NuevoEmpleado');
-                $scope.ContRegistros = $scope.ListEmpleadoMod.length;
+                $rootScope.ContRegistros = $scope.ListEmpleadoMod.length;
                 alert('Se ha registrado con exito');
             }).catch(function (err) {
                 console.error("Error al crear Empleado:", err.data);
@@ -65,7 +64,7 @@
             }).then(function (response) {
                 console.log(response.data)
                 $scope.ListEmpleadoMod = response.data;              
-                $scope.ContRegistros = response.data.length;
+                $rootScope.ContRegistros = response.data.length;
             }).catch(function (err) {
                 alert('Excepcion Sel.' + err.data);
             });
@@ -135,7 +134,7 @@
                     }).then(function (response) {
                         if ($scope.Estado === 'A') {
                             $scope.ListEmpleadoMod.splice(i, 1);
-                            $scope.ContRegistros = $scope.ListEmpleadoMod.length;
+                            $rootScope.ContRegistros = $scope.ListEmpleadoMod.length;
                         } else {
                             $scope.ListEmpleadoMod[i].estatus = 'C';
                         }

@@ -21,13 +21,18 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon">
                     <img class="rounded-circle" src="/img/Logo.png" alt="FlamingoSoft Logo" style="width: 100%; height: auto;">
                 </div>
-                <div class="sidebar-brand-text mx-3">Flamingo <sup>Soft</sup></div>
+                <hr>
+                <!--
+                    <div class="sidebar-brand-text mx-3">
+                        Flamingo <sup>Soft</sup>
+                    </div>
+                -->
             </a>
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -109,6 +114,13 @@
                     </div>
                 </li>
             -->
+            <!-- Nav Item - Actividades -->            
+            <li class="nav-item">
+                <a class="nav-link" href="#!/Actividades">
+                    <i class="fas fa-fw fa-clipboard"></i>
+                    <span>Actividades</span>
+                </a>
+            </li>
             <!-- Nav Item - Empleados -->
             <li class="nav-item">
                 <a class="nav-link" href="#!/Empleados">
@@ -121,6 +133,7 @@
                     <i class="fas fa-fw fa-user"></i>
                     <span>Clientes</span></a>
             </li>
+            <!-- Nav Item - Clientes -->
             <li class="nav-item">
                 <a class="nav-link" href="#!/CarteraClientes">
                     <i class="fas fa-fw fa-briefcase"></i>
@@ -129,10 +142,11 @@
             </li>
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            <!-- Sidebar Toggler (Sidebar) 
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
+            -->
          </ul>
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
@@ -146,10 +160,9 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
-                            <input type="text" ng-model="PalabraClave" class="form-control bg-light border-0 small" placeholder="Search for..."
+                            <input type="text" ng-model="PalabraClave" class="form-control bg-light border-0 small" placeholder="Buscar..."
                                 aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="button">
@@ -158,6 +171,25 @@
                             </div>
                         </div>
                     </form>
+                    <!----Registros en pagina---->
+                    <form>
+                        <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100">
+                                Registros:
+                                <br>
+                                <span class="text-primary">{{ContRegistros}}</span>
+                        </div>
+                    </form>
+                    <!----Registros en pagina---->
+                    <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100">
+                        Registros 
+                        <br>
+                        Pagina
+                        <select>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                    </div>
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -352,10 +384,11 @@
         <!-- End of Content Wrapper -->
     </div>
     <!-- End of Page Wrapper -->
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+    <!-- Scroll to Top Button
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+    -->
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -389,5 +422,6 @@
     <script src="Scripts/Controller/Cliente.js"></script>
     <script src="Scripts/Controller/Empleado.js"></script>
     <script src="/Scripts/Controller/CarteraCliente.js"></script>
+    <script src="/Scripts/Controller/Actividad.js"></script>
 </body>
 </html>

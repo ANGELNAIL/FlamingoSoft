@@ -1,6 +1,6 @@
-(function (Cliente) {
+(function (CarteraClientes) {
     "use strict";
-    Cliente.controller("CarteraClientesController", function ($http,$rootScope, $scope) {
+    CarteraClientes.controller("CarteraClientesController", function ($http,$rootScope, $scope) {
         $scope.ListCarteraClientesMod = null;
         $scope.Estado='A';
         $scope.Consultas=null;
@@ -27,12 +27,11 @@
                         nombre=$scope.Consultas.cliente[i].cliente;
                      }
                 }
-
                     $scope.ListCarteraClientesMod.push({    
                     idCartera: response.data.idCartera,
                     cliente: nombre,
                     estatus: NewCarteraClientes.estatus,               
-                    idCliente:NewCarteraClientes.idCliente,
+                    idCliente:NewCarteraClientes.idCliente
                 });
                 $rootScope.ContRegistros = $scope.ListCarteraClientesMod.length;
                 $rootScope.Closmod('#NuevoCarteraClientes','');
@@ -73,7 +72,7 @@
                method: "get",
                params:{id:Id}
            }).then(function (response) {
-            console.log(response);
+            console.log(response.data);
                 $scope.Edit = response.data;
                 $scope.Edit.idCliente=String($scope.Edit.idCliente);
                 $scope.Edit.idUsuario=String($scope.Edit.idUsuario);
@@ -88,23 +87,24 @@
         $scope.CarteraClientes_Upd = function (EditCarteraClientes) {
             var i;
             for (i = 0; i < $scope.ListCarteraClientesMod.length; i++) {
-                if ($scope.ListCarteraClientesMod[i].IdCliente === EditCliente.IdCliente) {
+                if ($scope.ListCarteraClientesMod[i].idCartera === EditCarteraClientes.idCartera) {
                     $http({
-                        url: "https://localhost:7039/api/CarteraClientes/PutCarteraClientes",
+                        url: "https://localhost:7039/api/CarteraClientes/PutCarteraCliente",
                         method: "put",
                         data: EditCarteraClientes
                     }).then(function (response) {
+                        var i,nombre;
+                        for (i = 0; i < $scope.Consultas.cliente.length; i++) {
+                             console.log(i);
+                             if($scope.Consultas.cliente[i].idCliente===parseInt(EditCarteraClientes.idCliente))
+                             {
+                                console.log($scope.Consultas.cliente[i]);
+                                nombre=$scope.Consultas.cliente[i].cliente;
+                             }
+                        }
                         $scope.ListCarteraClientesMod[i].idCliente=EditCarteraClientes.idCliente;
-                        $scope.ListCarteraClientesMod[i].nombreComercial=EditCarteraClientes.nombreComercial;
-                        $scope.ListCarteraClientesMod[i].nombre=EditCarteraClientes.nombre;
-                        $scope.ListCarteraClientesMod[i].apellidoPaterno=EditCarteraClientes.apellidoPaterno;
-                        $scope.ListCarteraClientesMod[i].apellidoMaterno=EditCarteraClientes.apellidoMaterno;
-                        $scope.ListCarteraClientesMod[i].correo=EditCarteraClientes.correo;
-                        $scope.ListCarteraClientesMod[i].telefono=EditCarteraClientes.telefono;
-                        $scope.ListCarteraClientesMod[i].celular=EditCarteraClientes.celular;
-                        $scope.ListCarteraClientesMod[i].direccion=EditCarteraClientes.direccion;
-                        $scope.ListCarteraClientesMod[i].persona=EditCarteraClientes.persona;
-                        $scope.ListCarteraClientesMod[i].estatus=EditCarteraClientes.estatus;      
+                        $scope.ListCarteraClientesMod[i].nombre=nombre;
+                        $scope.ListCarteraClientesMod[i].estatus=EditCarteraClientes.estatus;                        
                         $rootScope.Closmod('#DetallesCarteraClientes','');
                         $scope.Editar=false;
                         alert(response.data);
@@ -118,9 +118,9 @@
         $scope.CarteraClientes_Del = function (Id) {           
              var i;
             for (i = 0; i < $scope.ListCarteraClientesMod.length; i++) {
-                if ($scope.ListCarteraClientesMod[i].idCliente === Id) {
+                if ($scope.ListCarteraClientesMod[i].idCartera === Id) {
                     $http({
-                        url: "https://localhost:7039/Api/CarteraClientes",
+                        url: "https://localhost:7039/Api/CarteraClientes/DeleteCarteraCliente",
                         method: "DELETE",
                         params: { id: Id }
                     }).then(function (response) {
@@ -139,5 +139,12 @@
                     break;
                 }
             }
-        };        
+        };    
+        $scope.ValidarEditar=function () 
+        {
+            if($scope.Editar===true)
+            {
+                $scope.Editar=false;
+            }
+        }    
     });})(FlamingoSoft);
