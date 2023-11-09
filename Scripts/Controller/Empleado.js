@@ -1,15 +1,15 @@
 (function (Empleado) {
     "use strict";
-    Empleado.controller("EmpleadoController", function ($http,$rootScope, $scope) {
+    Empleado.controller("EmpleadoController", function ($http,$rootScope, $scope,Upload) {
         $scope.ListEmpleadoMod = null;
         $scope.Estado='A';
         $scope.Editar=false;
        $scope.NewEmpleado=
         {
             idEmpleado:0,
-            nombre:'Test',
-            apellidoPaterno:'Test1',
-            apellidoMaterno:'Test2',
+            nombre:'',
+            apellidoPaterno:'',
+            apellidoMaterno:'',
             cargo:'Contador',    
             fechaNac:new Date($rootScope.Anio, $rootScope.Mes, 1),
             imagen:'',
@@ -31,6 +31,7 @@
             {Puesto:"Pasante"},
         ]
         $scope.Empleado_Ins = function (NewEmpleado) {
+            //NewEmpleado.imagen= atob(NewEmpleado.imagen.split(',')[1]);
             $http({
                 url: "https://localhost:7039/Api/Empleados/PostEmpleado",
                 method: "POST",
@@ -147,5 +148,14 @@
                     break;
                 }
             }
-        };        
+        };  
+        $scope.CargarImagen=function (File) {
+            /*
+            Upload.base64DataUrl(File).then(function (url) 
+            {
+                // La variable 'url' contendrá la representación Base64 de la imagen.
+                console.log(url);
+                $scope.NewEmpleado.imagen= url;
+            });*/
+        }
     });})(FlamingoSoft);

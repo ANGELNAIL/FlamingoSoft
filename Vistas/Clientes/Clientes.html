@@ -111,7 +111,7 @@
                     </div>        
                     <div class="col-md-6">
                         <label>Rfc</label>
-                        <input maxlength="13" ng-change="DefinePersona()" class="form-control" type="text" ng-model="NewCliente.informacionFiscal.rfc">
+                        <input maxlength="13" ng-change="DefinePersona(NewCliente.informacionFiscal.rfc)" class="form-control" type="text" ng-model="NewCliente.informacionFiscal.rfc">
                     </div>
                     <div class="col-md-6">
                         <label>Inicio Actividades</label>
@@ -219,7 +219,7 @@
                     </div>        
                     <div class="col-md-6">
                         <label>Rfc</label>
-                        <input class="form-control" type="text" ng-model="Edit.informacionFiscal.rfc">
+                        <input class="form-control" maxlength="13" ng-change="DefinePersona(Edit.informacionFiscal.rfc)" type="text" ng-model="Edit.informacionFiscal.rfc">
                     </div>
                     <div class="col-md-6">
                         <label>Inicio Actividades</label>

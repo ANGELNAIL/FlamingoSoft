@@ -1,0 +1,195 @@
+<div ng-controller="TareaController" ng-init="Tareas_Sel(Estado);Tareas_Consultas()">
+    <h1>Tareas</h1>
+   <div class="row">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Estado</label>
+            </div>
+            <select class="custom-select form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="Estado">
+                <option value="T" selected="selected">Todos</option>
+                <option value="A">Activo</option>
+                <option value="C">Cancelado</option>
+                <option value="F">Completado</option>
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" ng-click="Tareas_Sel(Estado)">Buscar</button>
+            </div>                
+        </div>
+    </div>
+    <dir-pagination-controls paginate-id="Tareas"></dir-pagination-controls>
+    <table class="table table-bordered" id="dataTable" cellspacing="0" ng-hide="mainItems.length==0">
+        <thead>
+            <tr>
+                <th ng-click="sortBy('cliente')">Cliente <i class=" fas fa-sort"></i></th>     
+                <!----<th ng-click="sortBy('creador')">Creador <i class=" fas fa-sort"></i></th>--->          
+                <th ng-click="sortBy('encargado')">Encargado <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('fechaSolicitud')">F. Solicitud <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('fechaEntrega')">F. Entrega <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('actividad')">Actividad <i class=" fas fa-sort"></i></th>
+                <th ng-click="sortBy('estatus')">Estatus <i class=" fas fa-sort"></i></th>
+                <th>    
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoTareas">
+                    <i class="icon fas fa-plus"></i></button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="e in ListTareasMod | filter: PalabraClave | orderBy:ColumnName:reverse |itemsPerPage:RegistrosXPag as mainItems" paginate-id="Tareas"> 
+                <!--<td>{{e.creador}}</td>-->
+                <td>{{e.cliente}}</td>         
+                <td>{{e.encargado}}</td>
+                <td>{{e.fechaSolicitud|date :'yyyy/MM/dd'}}</td>
+                <td>{{e.fechaEntrega|date :'yyyy/MM/dd'}}</td>
+                <td>{{e.actividad}}</td>     
+                <td>
+                    <span ng-show="e.estatus=='A'">Activo</span>
+                    <span ng-show="e.estatus=='C'">Cancelado</span>
+                    <span ng-show="e.estatus=='F'">Completado</span>
+                </td>
+                <td>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#DetallesTareas"   ng-click="Tareas_SelbyId(e.idTarea)"><i class="icon fas fa-eye"></i></button>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#EliminarTareas" ng-click="Tareas_SelbyId(e.idTarea)"><i class="icon fas fa-trash"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3 ng-if="mainItems.length==0">No se encontraron registros     
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NuevoTareas">
+        <i class="icon fas fa-plus"></i>
+    </button></h3>
+    <dir-pagination-controls paginate-id="Tareas"></dir-pagination-controls>
+    <div id="NuevoTareas" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Agregar Tareas</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>Datos Tareas</h1>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Creador</label>
+                    <select disabled class="form-control" ng-model="NewTareas.usrCreador">
+                        <option ng-repeat="Empleado in Consultas.empleados" value="{{Empleado.idUsuario}}">
+                            {{Empleado.empleado}}
+                        </option>    
+                    </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Empleado</label>
+                        <select class="form-control" ng-change="CarteraClientes_SelbyUser(NewTareas.usrEncargado)" ng-model="NewTareas.usrEncargado">
+                            <option ng-repeat="Empleado in Consultas.empleados" value="{{Empleado.idUsuario}}">
+                                {{Empleado.empleado}}
+                            </option>    
+                        </select>
+                    </div>
+                    <div class="col-md-6" ng-if="contCliente>0">
+                        <label>Cliente</label>
+                        <select class="form-control" ng-change="CarteraClientes_SelbyId(NewTareas.usrEncargado)" ng-model="NewTareas.idCliente">
+                            <option ng-repeat="Cliente in ListCarteraClientesUsr" value="{{Cliente.idCliente}}">
+                                {{Cliente.cliente}}
+                            </option>    
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Actividad</label>
+                        <select class="form-control" ng-model="NewTareas.idActividad">
+                            <option ng-repeat="Actividad in Consultas.actividades" value="{{Actividad.idActividad}}">
+                                {{Actividad.actividad}}
+                            </option>    
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Fecha Solicitado</label>
+                        <input type="date" class="form-control" ng-model="NewTareas.fechaSolicitud">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Fecha Entrega</label>
+                        <input type="date" class="form-control" ng-model="NewTareas.fechaEntrega">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="Tareas_Ins(NewTareas)"><i class="icon fas fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="DetallesTareas" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title">Detalles Tareas <button class="btn btn-primary"
+                 ng-clicK="Editar=!Editar" ng-show="!Editar"><i class="icon fas fa-edit"></i></button></h1>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-6">
+                    <label>Creador</label>
+                <select  class="form-control" disabled ng-model="Edit.usrCreador">
+                    <option ng-repeat="Empleado in Consultas.empleados" value="{{Empleado.idUsuario}}">
+                        {{Empleado.empleado}}
+                    </option>    
+                </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Empleado</label>
+                    <select class="form-control" ng-disabled="!Editar" ng-model="Edit.usrEncargado">
+                        <option ng-repeat="Empleado in Consultas.empleados" value="{{Empleado.idUsuario}}">
+                            {{Empleado.empleado}}
+                        </option>    
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Fecha Solicitado</label>
+                    <input type="date" class="form-control" ng-disabled="!Editar" ng-model="Edit.fechaSolicitud">
+                </div>
+                <div class="col-md-6">
+                    <label>Fecha Entrega</label>
+                    <input type="date" class="form-control" ng-disabled="!Editar" ng-model="Edit.fechaEntrega">
+                </div>
+                <div class="col-md-12">
+                    <label>Actividad</label>
+                    <select class="form-control"  ng-disabled="!Editar" ng-model="Edit.idActividad">
+                        <option ng-repeat="Actividad in Consultas.actividades" value="{{Actividad.idActividad}}">
+                            {{Actividad.actividad}}
+                        </option>    
+                    </select>
+                </div>
+            </div>
+        </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal"  ng-click="ValidarEditar()"><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-show="Editar" ng-click="Tareas_Upd(Edit)"><i class="icon fas fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="EliminarTareas" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header  bg-danger">
+              <h5 class="modal-title">Eliminar Tareas</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h1>¿Desea eliminar la actividad {{Edit.nombre}}?</h1>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ><i class="icon fas fa-times"></i></button>
+              <button type="button" class="btn btn-primary" ng-click="Tareas_Del(Edit.idTarea)"><i class="icon fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>

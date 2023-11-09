@@ -76,13 +76,20 @@
                         <label>Correo</label>
                         <input class="form-control">
                     </div>
+                    <!---
                     <div class="col-md-6">
                         <label>Imagen </label>
                         <div class="input-group">
-                            <input ng-model="NewEmpleado.imagen" id="" ng-change="fileChanged()" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                            <input ng-model="NewEmpleado.imagen" id="" ngf-select="CargarImagen($file)" accept="image/*" 
+                            type="file" class="form-control" id="inputGroupFile04" 
+                            aria-describedby="inputGroupFileAddon04" aria-label="Upload">
                             <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Button</button>
                           </div>
-                    </div>
+                            <div>
+                                <img ng-src="{{NewEmpleado.imagen}}" alt="Imagen Base64">
+                            </div>
+                        </div>
+                    -->
                     <div class="col-md-6">
                         <label>Fecha de Nacimiento</label>
                         <input class="form-control" type="date" ng-model="NewEmpleado.fechaNac">

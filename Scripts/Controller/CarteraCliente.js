@@ -2,6 +2,7 @@
     "use strict";
     CarteraClientes.controller("CarteraClientesController", function ($http,$rootScope, $scope) {
         $scope.ListCarteraClientesMod = null;
+        $scope.ListCarteraClientesUsr = null;
         $scope.Estado='A';
         $scope.Consultas=null;
         $scope.NewCarteraClientes=
@@ -66,7 +67,7 @@
                 alert('Excepcion Sel Consultas.' + err.data);
             });
         }
-        $scope .CarteraClientes_SelbyId =function (Id) {
+        $scope.CarteraClientes_SelbyId =function (Id) {
             $http({
                url: "https://localhost:7039/Api/CarteraClientes/GetCarteraCliente",
                method: "get",
@@ -80,6 +81,19 @@
                alert('Excepcion SelById.' + err.data);
            });
        }
+       $scope.CarteraClientes_SelbyUser =function (Id) {
+        $http({
+           url: "https://localhost:7039/Api/CarteraClientes/GetCarteraCliente_SelById",
+           method: "get",
+           params:{id:Id}
+       }).then(function (response) {
+        console.log(response.data);
+            $scope.ListCarteraClientesUsr = response.data;
+            console.log(response.data);
+       }).catch(function (err) {
+           alert('Excepcion SelById.' + err.data);
+       });
+   }
         $scope.CarteraClientes_LoadEdit = function (e) {
             //EditCarteraClientes
             $scope.EditCarteraClientes= e;  

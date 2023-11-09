@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="FlamingoSoftApp">
-<head>
+<head ng-init="getCookie()">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -10,10 +10,15 @@
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="Nunito.css" rel="stylesheet">
+    <link href="/css/Estilos.css" rel="stylesheet">
     <!---Angular js--->
-    <script src="Scripts/angular.min.js"></script>
-    <script src="Scripts/angular-route.js"></script>
-    <script src="Scripts/dirPagination.js"></script>
+    <script src="/Scripts/angular.min.js"></script>
+    <script src="/Scripts/angular-route.js"></script>
+    <script src="/Scripts/ng-file-upload.min.js"></script>
+    <script src="/Scripts/ng-file-upload-shim.min.js"></script>
+    <script src="/Scripts/dirPagination.js"></script>
+    <script src="/Scripts/cookies.js"></script>
+    <script src="/Scripts/cookieWriter.js"></script>
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 </head>
@@ -133,6 +138,12 @@
                     <i class="fas fa-fw fa-user"></i>
                     <span>Clientes</span></a>
             </li>
+            <!-- Nav Item - Tareas -->
+            <li class="nav-item">
+                <a class="nav-link" href="#!/Tareas">
+                   <i class="fas fa-fw fa-user"></i>
+                   <span>Tareas</span></a>
+            </li>
             <!-- Nav Item - Clientes -->
             <li class="nav-item">
                 <a class="nav-link" href="#!/CarteraClientes">
@@ -184,7 +195,7 @@
                         Registros 
                         <br>
                         Pagina
-                        <select>
+                        <select ng-model="RegistrosXPag">
                             <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="30">30</option>
@@ -215,15 +226,16 @@
                                 </form>
                             </div>
                         </li>
-                        <!-- Nav Item - Alerts -->
+                        <!-- Nav Item - Alerts 
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
                                 <span class="badge badge-danger badge-counter">3+</span>
                             </a>
-                            <!-- Dropdown - Alerts -->
+                            -->
+                            <!-- Dropdown - Alerts
+                                
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="alertsDropdown">
                                 <h6 class="dropdown-header">
@@ -264,16 +276,17 @@
                                 </a>
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
                             </div>
+                             -->
                         </li>
-                        <!-- Nav Item - Messages -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                        <!-- Nav Item - Messages 
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
-                                <!-- Counter - Messages -->
                                 <span class="badge badge-danger badge-counter">7</span>
+                            -->
                             </a>
-                            <!-- Dropdown - Messages -->
+                            <!-- Dropdown - Messages 
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="messagesDropdown">
                                 <h6 class="dropdown-header">
@@ -329,13 +342,14 @@
                                 </a>
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                             </div>
+                            -->
                         </li>
                         <div class="topbar-divider d-none d-sm-block"></div>
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{decodedToken.nombre}}</span>
                                 <img class="img-profile rounded-circle"
                                     src="img/undraw_profile.svg">
                             </a>
@@ -344,20 +358,16 @@
                                 aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
+                                    Perfil
                                 </a>
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Settings
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Activity Log
+                                    Ajustes
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                                    Cerrar Sesion
                                 </a>
                             </div>
                         </li>
@@ -394,16 +404,16 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title text-white" id="exampleModalLabel">Alerta</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">¿Desea cerrar sesión.?</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-primary" ng-click="Logout()">Cerrar Sesion</a>
                 </div>
             </div>
         </div>
@@ -423,5 +433,6 @@
     <script src="Scripts/Controller/Empleado.js"></script>
     <script src="/Scripts/Controller/CarteraCliente.js"></script>
     <script src="/Scripts/Controller/Actividad.js"></script>
+    <script src="/Scripts/Controller/Tarea.js"></script>
 </body>
 </html>

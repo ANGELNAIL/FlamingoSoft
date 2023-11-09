@@ -2,8 +2,6 @@
     "use strict";
     Actividad.controller("ActividadesController", function ($http,$rootScope, $scope) {
         $scope.ListActividadesMod = null;
-        $scope.Estado='A';
-        $scope.Consultas=null;
         $scope.NewActividades=
         {
             idActividad: 0,

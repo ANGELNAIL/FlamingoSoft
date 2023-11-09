@@ -51,11 +51,14 @@
               idCliente: 0
             }
           }
-          $scope.DefinePersona=function()
+          $scope.DefinePersona=function(rfc)
           {
-            if($scope.NewCliente.rfc.length>12)
+            console.log(rfc);
+            console.log(rfc.length);
+            if(rfc.length>12)
             {
                 $scope.NewCliente.persona=true;
+                $scope.Edit.Cliente.rfc
             }
             else
             {

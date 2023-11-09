@@ -1,4 +1,4 @@
-<div ng-controller="ActividadesController" ng-init="Actividades_Sel(Estado);CarteraClienteConsultas_Sel()">
+<div ng-controller="ActividadesController" ng-init="Actividades_Sel(Estado);">
     <h1>Actividades</h1>
     <div class="row">
         <div class="input-group mb-3">
@@ -61,7 +61,7 @@
                 <h1>Datos Actividades</h1>
                 <div class="row">
                     <div class="col-md-12">
-                        <label>Cliente</label>
+                        <label>Nombre Actividad</label>
                         <input type="text" class="form-control" ng-model="NewActividades.nombre">
                     </div>
                     <div class="col-md-12">
@@ -91,7 +91,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <label>Cliente</label>
+                        <label>Nombre Actividad</label>
                         <input ng-disabled="!Editar" type="text" class="form-control" ng-model="Edit.nombre">
                     </div>
                     <div class="col-md-12">
